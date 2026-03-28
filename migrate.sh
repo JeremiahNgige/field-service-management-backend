@@ -14,4 +14,7 @@ python manage.py makemigrations user
 echo "Running user migrate..."
 python manage.py migrate user
 
+echo "Generating mock jobs data..."
+python jobs_generator.py
+
 echo "Done!"

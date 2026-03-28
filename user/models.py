@@ -11,8 +11,10 @@ class User(AbstractUser):
         choices=[
             ("admin", "Admin"),
             ("technician", "Technician"),
-            ("customer", "Customer"),
+            ("driver", "Driver"),
+            ("inspectors", "Inspectors"),
         ],
+        default="technician",
     )
     username = models.CharField(max_length=150, unique=False, blank=True, null=True)
     email = models.EmailField(unique=True)
@@ -20,7 +22,7 @@ class User(AbstractUser):
     address = models.CharField(max_length=255)
     profile_picture = models.URLField(blank=True, null=True)
     date_joined = models.DateTimeField(auto_now_add=True)
-
+    fcm_token = models.CharField(max_length=255, blank=True, null=True)
     last_login = models.DateTimeField(default=timezone.now)
 
     # Use email for login instead of username since username is no longer unique

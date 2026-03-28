@@ -8,3 +8,9 @@ pytz
 sqlparse
 psycopg2-binary
 python-dotenv
+django-storages
+boto3
+gunicorn
+celery
+redis
+firebase-admin

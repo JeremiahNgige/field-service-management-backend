@@ -5,7 +5,8 @@ from .views import (
     JobUpdateView,
     JobDeleteView,
     JobDetailView,
-    JobAssignView,
+    GenerateUploadURLsView,
+    GetDownloadURLsView,
 )
 
 urlpatterns = [
@@ -14,7 +15,8 @@ urlpatterns = [
     path("update/<uuid:job_id>/", JobUpdateView.as_view(), name="update"),
     path("delete/<uuid:job_id>/", JobDeleteView.as_view(), name="delete"),
     path("detail/<uuid:job_id>/", JobDetailView.as_view(), name="detail"),
-    path("assign/<uuid:job_id>/", JobAssignView.as_view(), name="assign"),
+    path("upload-urls/", GenerateUploadURLsView.as_view(), name="upload-urls"),
+    path("download-urls/", GetDownloadURLsView.as_view(), name="download-urls"),
 ]
 
 app_name = "jobs"
