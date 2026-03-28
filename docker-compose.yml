@@ -53,6 +53,25 @@ services:
       - minio
       - redis
 
+  test_runner:
+    build: .
+    command: sh test.sh
+    profiles:
+      - testing
+    volumes:
+      - .:/app
+    environment:
+      - DB_HOST=db
+      - AWS_S3_ENDPOINT_URL=http://minio:9000
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - minio
+      - redis
+
   minio:
     image: minio/minio:latest
     command: server /data --console-address ":9001"

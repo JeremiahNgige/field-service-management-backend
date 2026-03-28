@@ -3,9 +3,9 @@ from rest_framework import status
 from django.urls import reverse
 from user.models import User
 
+
 class AuthProfileIntegrationTests(APITestCase):
     def setUp(self):
-        # We need to use reverse to find the URLs safely or hardcode if we know them
         # user urls seem to be app_name = "user", names="register", "login", "profile", "update"
         self.register_url = reverse("user:register")
         self.login_url = reverse("user:login")
@@ -19,7 +19,7 @@ class AuthProfileIntegrationTests(APITestCase):
             "address": "123 Main St, Springfield",
             "user_type": "technician",
             "password": "SecurePassword123!",
-            "password2": "SecurePassword123!"
+            "password2": "SecurePassword123!",
         }
 
     def test_complete_auth_profile_flow(self):
@@ -36,17 +36,17 @@ class AuthProfileIntegrationTests(APITestCase):
         # 2. Login to retrieve JWT tokens
         login_data = {
             "email": self.user_data["email"],
-            "password": self.user_data["password"]
+            "password": self.user_data["password"],
         }
         response = self.client.post(self.login_url, login_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("access", response.data)
         self.assertIn("refresh", response.data)
-        
+
         access_token = response.data["access"]
-        
+
         # Authenticate all subsequent requests with the JWT
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {access_token}')
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {access_token}")
 
         # 3. Fetch user profile
         response = self.client.get(self.profile_url)
@@ -55,9 +55,7 @@ class AuthProfileIntegrationTests(APITestCase):
         self.assertEqual(response.data["user"]["user_id"], user_id)
 
         # 4. Update profile details
-        update_data = {
-            "address": "456 Advanced Ave, Metropolis"
-        }
+        update_data = {"address": "456 Advanced Ave, Metropolis"}
         response = self.client.put(self.update_url, update_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["user"]["address"], update_data["address"])
@@ -70,16 +68,13 @@ class AuthProfileIntegrationTests(APITestCase):
         """Ensure clear validation errors are returned for bad inputs based on our recent refactor"""
         bad_data = self.user_data.copy()
         bad_data["password2"] = "Mismatch!"
-        
+
         response = self.client.post(self.register_url, bad_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("Passwords do not match", response.data["message"])
 
     def test_login_invalid_credentials(self):
-        login_data = {
-            "email": "not_real@example.com",
-            "password": "WrongPassword123!"
-        }
+        login_data = {"email": "not_real@example.com", "password": "WrongPassword123!"}
         response = self.client.post(self.login_url, login_data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("No account found", response.data["message"])

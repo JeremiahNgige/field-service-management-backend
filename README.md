@@ -326,7 +326,10 @@ python manage.py test jobs.tests.JobTests.test_job_creation
 ### Run API Integration Tests
 
 ```bash
-# Run all integration tests across both apps
+# Run tests inside the isolated Docker Test Runner (recommended)
+docker compose --profile testing run --rm test_runner
+
+# OR run manually locally across both apps
 python manage.py test user.tests_integration jobs.tests_integration
 ```
 
