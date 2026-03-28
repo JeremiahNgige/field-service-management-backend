@@ -157,3 +157,15 @@ cython_debug/
 
 # macOS
 .DS_Store
+
+# Google Cloud / Firebase Admin SA Credentials
+firebase-credentials.json
+*-credentials.json
+*.pem
+*.key
+*.p12
+
+# Other typical secrets
+docker-compose.override.yml
+secrets/
+.secret
