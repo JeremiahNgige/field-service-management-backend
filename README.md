@@ -387,6 +387,3 @@ python jobs_generator.py
 ### ⚙️ General
 - **`DEBUG=True` is set by default.** This must be changed to `False` and `SECRET_KEY` must be rotated before any production deployment.
 - **`ALLOWED_HOSTS="*"` is set by default**, which should be restricted to specific domains in production.
-- **No API versioning.** All endpoints are unversioned (`/user/`, `/jobs/`), making future breaking changes harder to manage.
-- **No rate limiting or throttling** is configured on any endpoint.
-- **`migrate.sh` runs `makemigrations` on startup**, which is not suitable for production. Migration files should be committed to version control and only `migrate` should run in deployment pipelines.
