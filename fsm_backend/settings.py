@@ -37,6 +37,20 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    # Versioning — URL path based: /api/v1/, /api/v2/, ...
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
+    "DEFAULT_VERSION": "v1",
+    "ALLOWED_VERSIONS": ["v1"],
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle",
+        "rest_framework.throttling.UserRateThrottle",
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "100/day",
+        "user": "1000/day",
+        # Login endpoint: 5 attempts per minute per IP
+        "login": "5/min",
+    },
 }
 
 SIMPLE_JWT = {
@@ -115,6 +129,15 @@ DATABASES = {
         "PASSWORD": os.environ.get("DB_PASSWORD", "?Hixi3USasp$"),
         "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
         "PORT": os.environ.get("DB_PORT", "5432"),
+    }
+}
+
+
+# Cache — backed by Redis (DB 2, separate from Celery on DB 1)
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": os.environ.get("REDIS_URL", "redis://redis:6379/2"),
     }
 }
 

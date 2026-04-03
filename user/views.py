@@ -1,12 +1,9 @@
-from django.http import Http404
 from django.db import IntegrityError, DatabaseError, OperationalError
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.exceptions import (
     ValidationError as DRFValidationError,
-    PermissionDenied,
-    NotAuthenticated,
     Throttled,
 )
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -22,6 +19,7 @@ from .serializers import (
     UserSerializer,
     UpdateFCMTokenSerializer,
 )
+from .throttles import LoginRateThrottle
 
 from jobs.models import Job
 from jobs.serializers import JobSerializer
@@ -136,6 +134,7 @@ class UserRegistrationView(generics.CreateAPIView):
 
 class UserLoginView(generics.GenericAPIView):
     permission_classes = [AllowAny]
+    throttle_classes = [LoginRateThrottle]
     serializer_class = UserLoginSerializer
 
     def post(self, request):
@@ -160,7 +159,9 @@ class UserLoginView(generics.GenericAPIView):
             )
         except Throttled as e:
             wait = e.wait
-            wait_msg = f" Please wait {int(wait)} seconds before trying again." if wait else ""
+            wait_msg = (
+                f" Please wait {int(wait)} seconds before trying again." if wait else ""
+            )
             return Response(
                 {
                     "message": (
@@ -351,8 +352,7 @@ class UserLogoutView(generics.GenericAPIView):
             return Response(
                 {
                     "message": (
-                        "An unexpected error occurred during logout. "
-                        "Please try again."
+                        "An unexpected error occurred during logout. Please try again."
                     )
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,

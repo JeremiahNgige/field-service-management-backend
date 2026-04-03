@@ -11,6 +11,7 @@ services:
       - AWS_S3_ENDPOINT_URL=http://minio:9000
       - CELERY_BROKER_URL=redis://redis:6379/1
       - CELERY_RESULT_BACKEND=redis://redis:6379/1
+      - REDIS_URL=redis://redis:6379/2
     env_file:
       - .env
     depends_on:

@@ -1,18 +1,10 @@
-if [ -d ".venv" ]; then
-    source .venv/bin/activate
-fi
+# NOTE: migration files must be generated locally with:
+#   python manage.py makemigrations
+# and committed to version control before deploying.
+# This script only applies already-committed migrations.
 
-echo "Running jobs makemigrations..."
-python manage.py makemigrations jobs
-
-echo "Running jobs migrate..."
-python manage.py migrate jobs
-
-echo "Running user makemigrations..."
-python manage.py makemigrations user
-
-echo "Running user migrate..."
-python manage.py migrate user
+echo "Applying database migrations..."
+python manage.py migrate
 
 echo "Generating mock jobs data..."
 python jobs_generator.py
